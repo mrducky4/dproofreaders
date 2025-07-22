@@ -949,7 +949,7 @@ const makePreview = function (txt, viewMode, wrapMode, styler, getMessage) {
             if (styler.color) {
                 classes.push(`${colorClass}_color`);
             }
-            if (viewMode !== "flat") {
+            if (viewMode !== "flat" && viewMode !== "table_text") {
                 classes.push(formatClass);
             }
             return classes.length > 0 ? ` class='${classes.join(" ")}'` : "";
@@ -972,23 +972,30 @@ const makePreview = function (txt, viewMode, wrapMode, styler, getMessage) {
                     tagMark = boxHtml(match);
                     break;
                 case "flat":
+                case "table_text":
                     tagMark = tagMap[p2];
                     break;
                 default: // no_tags
                     break;
             }
-            if (p1 === "/") {
+            if (p1 === "/" && viewMode !== "table_text") {
                 // end tag
                 return tagMark + endSpan;
             }
             let styleClass = decideClass(p2, p2);
-            return `<span${styleClass}>${tagMark}`;
+            let returnSpan;
+            if (viewMode === "table_text") {
+                returnSpan = `<span${styleClass}>${tagMark}</span>`;
+            } else {
+                returnSpan = `<span${styleClass}>${tagMark}`;
+            }
+            return returnSpan;
         }
 
         // inline tags
         // the way html treats small cap text is different to the dp convention
         // so if sc-marked text is all upper-case transform to lower
-        if (viewMode !== "flat") {
+        if (viewMode !== "flat" && viewMode !== "table_text") {
             txt = txt.replace(smallCapRegex, transformSC);
         }
         // find inline tags
@@ -1185,7 +1192,16 @@ const makePreview = function (txt, viewMode, wrapMode, styler, getMessage) {
         return txt.replace(/</g, "┌").replace(/>/g, "┐").replace(/&/g, "▙");
     }
 
-    let analysis = analyse(txt, styler);
+    let analysis;
+    if (viewMode === "table_text") {
+        analysis = {
+            issues: [],
+            text: txt,
+            noteArray: [],
+        }
+    } else {
+        analysis = analyse(txt, styler);
+    }
     let issArray = analysis.issues;
     let issues = 0;
     let possIss = 0;
