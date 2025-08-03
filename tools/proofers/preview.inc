@@ -15,6 +15,7 @@ function output_preview_div()
     $color_markup = html_safe(_("Color markup"));
     $image = html_safe(_("Image"));
     $text = html_safe(_("Text"));
+    $table_text = html_safe(_("Table Text"));
     $font = html_safe(_("Font"));
     $tags = html_safe(_("Tags"));
     $no_tags = html_safe(_("No Tags"));
@@ -54,6 +55,7 @@ function output_preview_div()
                         <input type="radio" name="viewSel" id="show_tags"><label for="show_tags">$tags</label>
                         <input type="radio" name="viewSel" id="no_tags"><label for="no_tags">$no_tags</label>
                         <input type="radio" name="viewSel" id="flat"><label for="flat">$text</label>
+                        <input type="radio" name="viewSel" id="table_text"><label for="tabletext">$table_text</label>
                     </span>
                     <span class='ilb styleoption'>
                         <input type="checkbox" id="re_wrap"><label for="re_wrap">$re_wrap</label>
@@ -90,6 +92,7 @@ function output_preview_div()
                     <option value="show_tags">$tags</option>
                     <option value="no_tags">$no_tags</option>
                     <option value="flat">$text</option>
+                    <option value="table_text">$table_text</option>
                 </select>
             </fieldset>
             <div class="box2">
