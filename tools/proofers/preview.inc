@@ -92,7 +92,6 @@ function output_preview_div()
                     <option value="show_tags">$tags</option>
                     <option value="no_tags">$no_tags</option>
                     <option value="flat">$text</option>
-                    <option value="table_text">$table_text</option>
                 </select>
             </fieldset>
             <div class="box2">

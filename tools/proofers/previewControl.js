@@ -102,7 +102,8 @@ window.addEventListener("DOMContentLoaded", () => {
         issBox.value = preview.issues;
         possIssBox.value = preview.possIss;
         // show the style controls if there are no issues
-        $(".styleoption").toggle(preview.ok);
+        //$(".styleoption").toggle(preview.ok);
+        $(".styleoption").toggle(true);
         // if any issues are suppressed show warning
         var warn = Object.keys(previewStyles.suppress).some(function (key) {
             return previewStyles.suppress[key];

@@ -1188,16 +1188,8 @@ export const makePreview = function (txt, viewMode, wrapMode, styler) {
         return txt.replace(/</g, "┌").replace(/>/g, "┐").replace(/&/g, "▙");
     }
 
-    let analysis;
-    if (viewMode === "table_text") {
-        analysis = {
-            issues: [],
-            text: txt,
-            noteArray: [],
-        }
-    } else {
-        analysis = analyse(txt, styler);
-    }
+    const showIssues = viewMode !== "table_text"; // true means show analysis issues in the previewed text
+    const analysis = analyse(txt, styler);
     let issArray = analysis.issues;
     let issues = 0;
     let possIss = 0;
@@ -1214,16 +1206,20 @@ export const makePreview = function (txt, viewMode, wrapMode, styler) {
 
     let issueStarts = [];
     let issueEnds = [];
-    issArray.forEach(function (issue) {
-        let issueStyle = issue.type === 0 ? "hlt_color" : "err_color";
-        issueStarts.push({ start: issue.start, text: `<span class='${issueStyle}' title='${issue.text}'>` });
-        issueEnds.push({ start: issue.start + issue.len, text: endSpan });
-    });
+    if (!showIssues) {
+        analysis.text = txt;
+    } else {
+        issArray.forEach(function (issue) {
+            let issueStyle = issue.type === 0 ? "hlt_color" : "err_color";
+            issueStarts.push({ start: issue.start, text: `<span class='${issueStyle}' title='${issue.text}'>` });
+            issueEnds.push({ start: issue.start + issue.len, text: endSpan });
+        });
+    }
 
     var tArray = analysis.text.split("");
 
     let noteArray;
-    if (ok && wrapMode) {
+    if ((ok || !showIssues) && wrapMode) {
         // leave out proofers' notes
         noteArray = [];
     } else {
@@ -1233,7 +1229,7 @@ export const makePreview = function (txt, viewMode, wrapMode, styler) {
         });
     }
 
-    if (!ok) {
+    if (!ok && showIssues) {
         tArray = tArray.map(htmlEncode);
     } else {
         tArray = tArray.map(boxEncode);
@@ -1260,7 +1256,7 @@ export const makePreview = function (txt, viewMode, wrapMode, styler) {
     // join it back into a string
     txt = tArray.join("");
 
-    if (ok) {
+    if (ok || !showIssues) {
         showStyle();
         if (wrapMode) {
             reWrap();
